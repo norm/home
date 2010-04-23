@@ -14,7 +14,7 @@ Philosophy
 
 There are two basic tenets I abide by when I structure my home directory.
 
-# Mimic the long-established Unix file system hierarchy.
+1. _Mimic the long-established Unix file system hierarchy._
 
   I do not like hidden (dot) files. System-wide configuration settings are not
   hidden like this (they are stored in /etc). So why should my configuration
@@ -27,7 +27,7 @@ There are two basic tenets I abide by when I structure my home directory.
   Scripts are kept in ~/bin. Library code is kept in ~/lib. Data files in
   ~/var. Documentation and example code in ~/share.
   
-# Keep separate settings in separate files.
+2. _Keep separate settings in separate files._
 
   Rather than have one huge file full of aliases, environment variables and
   functions in my .bashrc, making it hard to find and update things, I keep
