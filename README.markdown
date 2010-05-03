@@ -11,7 +11,6 @@ like having broken things to fix.
 
 Philosophy
 ----------
-
 There are two basic tenets I abide by when I structure my home directory.
 
 1. _Mimic the long-established Unix file system hierarchy._
@@ -22,7 +21,9 @@ There are two basic tenets I abide by when I structure my home directory.
   
   Wherever possible I keep configuration files in ~/etc. If the location of a
   configuration file is hard-coded in a program, I keep as short a stub file
-  as I can get away with there, and source the settings from elsewhere.
+  as I can get away with there, and source the settings from elsewhere. If the
+  configuration format doesn't allow for other files to be included, I create
+  the dotfile as a symlink to the real settings file.
   
   Scripts are kept in ~/bin. Library code is kept in ~/lib. Data files in
   ~/var. Documentation and example code in ~/share.
@@ -35,10 +36,8 @@ There are two basic tenets I abide by when I structure my home directory.
   into separate files.
 
 
-
 Rationale
 ---------
-
 I like to keep the more useful parts of my Unix home directory under revision
 control. I exposed this as the [homedir][homedir] project on github, which got
 a fair amount of attention and several forks as people used it as a basis for
