@@ -1,0 +1,139 @@
+# github:etc/bash/prompt
+# -*- Mode: Bash; tab-width: 4; indent-tabs-mode: nil; -*-
+#
+#       Setup the prompt environment variables.
+
+# Echo the last N parts of the current working directory, also trimming 
+# individual parts to no more than PWDN_MAX_WORD.
+function pwdn {
+    local maximum_word_length=${PWDN_MAX_WORD:=10}
+    local               depth=$1
+    
+    pwd | perl -e "
+        \$_ = <>;
+        if ( m{^ / $}x ) {
+            print;
+        }
+        else {
+            s{^ /Users/(\w+) }{~\$1}x;      # fix /Users/xxx to ~xxx
+            s{^ /home/(\w+)  }{~\$1}x;      # fix /home/xxx  to ~xxx
+            s{ ~ \$ENV{USER} }{~}x;         # fix ~$USER     to ~
+            @dirs = split( m{/} );
+            foreach ( 1 .. $depth ) {
+                if ( @dirs ) {
+                    my \$x    = pop @dirs;
+                    my \$half = int( ( $maximum_word_length - 1 ) / 2 );
+                    
+                    # if this directory name is too large, truncate
+                    # the middle and replace it with an ellipsis
+                    \$x =~ m{^ (.{0,\$half}) (.*?) (.{0,\$half}) $}x;
+                    \$x  = \"\$1…\$3\"  if ( length( \$2 ) > 2 );
+                    push( @return, \$x );
+                }
+            }
+            print join( q(/), reverse @return );
+        }
+    "
+}
+
+# Replace placeholders of the style [home] with their actual values.
+function expand_prompt_template {
+    local template="$1"
+    local title="$2"
+    
+    # the title is only useful in xterm-compatible terminal types
+    case $TERM in
+        xterm*|rxvt*)
+            if [ -n "$title" ]; then
+                title="%T${title}%t"
+                template="${title}${template}"
+            fi
+            ;;
+    esac
+    
+    # [%] macro
+    local char="${PROMPT_USERCHAR:=%}"
+    [ `id -u` == '0' ] \
+        && char="${PROMPT_ROOTCHAR:=#}"
+    
+    # [%%] macro
+    local chardepth=$(
+            echo "${PROMPT_SYMBOLS}${char}" | sed -e 's/\$/\\\\\$/g'
+        )
+    
+    # [user] macro
+    local user=''
+    [ "$USER" != "$DEFAULT_USER" ] \
+        && user="${PROMPT_USER:=${USER}}"
+        
+    # [host] macro
+    local host="${PROMPT_HOST:=${HOST}}"
+    
+    # [domain] macro
+    local host="${PROMPT_DOMAIN:=${DOMAIN}}"
+    
+    # [window] macro
+    local window=''
+    [ "$WINDOW" != '' ] \
+        && window="${PROMPT_WINDOW:=${WINDOW}}"
+    
+    echo "$template" | sed                          \
+        -e "s/\[%\]/$char/g"                        \
+        -e "s/\[%%\]/$chardepth/g"                  \
+        -e "s/\[user\]/${user}/g"                   \
+        -e "s/\[host\]/${host}/g"                   \
+        -e "s/\[domain\]/${domain}/g"               \
+        -e "s/\[window\]/${window}/g"               \
+        -e 's/\[pwd \([0-9]\)\]/$(pwdn \1)/g'       \
+        -e "s/%B/$pbold/g"                          \
+        -e "s/%b/$pnobold/g"                        \
+        -e "s/%I/$pitalic/g"                        \
+        -e "s/%i/$pnoitalic/g"                      \
+        -e "s/%U/$punder/g"                         \
+        -e "s/%u/$pnounder/g"                       \
+        -e "s/%R/$pinverse/g"                       \
+        -e "s/%r/$pnoinverse/g"                     \
+        -e "s/%S/$pstrike/g"                        \
+        -e "s/%s/$pnostrike/g"                      \
+        -e "s/%X/$preset/g"                         \
+        -e "s/%T/$xtitlestart/g"                    \
+        -e "s/%t/$xtitlefinish/g"                   \
+        -e "s/%ck/$pblack/g"                        \
+        -e "s/%cb/$pblue/g"                         \
+        -e "s/%cr/$pred/g"                          \
+        -e "s/%cm/$pmagenta/g"                      \
+        -e "s/%cg/$pgreen/g"                        \
+        -e "s/%cc/$pcyan/g"                         \
+        -e "s/%cy/$pyellow/g"                       \
+        -e "s/%cw/$pwhite/g"                        \
+        -e "s/%cn/$pnormal/g"                       \
+        -e "s/%Ck/$pbgblack/g"                      \
+        -e "s/%Cb/$pbgblue/g"                       \
+        -e "s/%Cr/$pbgred/g"                        \
+        -e "s/%Cm/$pbgmagenta/g"                    \
+        -e "s/%Cg/$pbggreen/g"                      \
+        -e "s/%Cc/$pbgcyan/g"                       \
+        -e "s/%Cy/$pbgyellow/g"                     \
+        -e "s/%Cw/$pbgwhite/g"                      \
+        -e "s/%Cn/$pbgnormal/g"
+        
+        # TODO: 
+        #   *   git status
+        #   *   hg status
+        #   *   svn status?
+}
+
+# Allow for complex PS1 values to be set in a more succinct, readable fashion.
+[ -n "$PS1_TEMPLATE" ] \
+    && PS1=$( expand_prompt_template "$PS1_TEMPLATE" "$PS1_TITLE_TEMPLATE" )
+
+# TODO
+#   *   PS2
+#   *   PS3
+#   *   PS4
+
+# Add the current prompt symbol as a quick visual indicator of shell depth.
+# export PROMPT_SYMBOLS - ???
+[ `id -u` == '0' ]                                                  \
+    && PROMPT_SYMBOLS="${PROMPT_SYMBOLS}${PROMPT_ROOTCHAR:=#}"      \
+    || PROMPT_SYMBOLS="${PROMPT_SYMBOLS}${PROMPT_USERCHAR:=%}"

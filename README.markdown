@@ -5,8 +5,8 @@ A starting point for a Unix-like home directory structure which can be shared
 across multiple machines.
 
 *Note:* this is currently in draft, and likely to be revised heavily over the
-next couple of weeks. Use it as a basis for your home directory only if you
-like having broken things to fix.
+next couple of weeks. Use it as a basis for your home directory only **if you
+like having broken things to fix**.
 
 
 Philosophy
@@ -51,6 +51,8 @@ forking it for is the structure I impose upon my bash startup.
 So I thought I would break this out into its own project which can be more 
 easily forked as a starting point without then needing to delete all of my
 stuff.
+
+Yes, it _is_ very over-engineered. Thanks for noticing.
 
 -- Mark Norman Francis.
 

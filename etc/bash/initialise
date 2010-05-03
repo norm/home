@@ -6,8 +6,8 @@
 #       
 #       Read ~/share/home/customising.markdown before making any changes.
 
-# Allow overriding of the default location of bash setup. 
-# (Mostly useful for debugging.)
+# Allow overriding of the default location of bash setup.
+# (Useful when debugging.)
 BASH_BASE="${BASH_DIR:=~/etc/bash}"
 
 # Sane defaults.
@@ -19,10 +19,6 @@ done
 for rc_file in $( echo ${BASH_BASE}/function/* ); do
     source $rc_file
 done
-
-# Overwrite sane defaults with saner local defaults.
-source_if_exists ${BASH_BASE}/flags.local
-source_if_exists ${BASH_BASE}/defaults.local
 
 # Setup anything that is specific to the current location/hardware.
 source_if_exists ${BASH_BASE}/os/${HOSTOS}/*
@@ -36,11 +32,10 @@ for rc_file in $( echo ${BASH_BASE}/rc/* ); do
 done
 
 # Setup bash completion.
-source_or_warn ${BASH_COMPLETION:=/etc/bash_completion}
-source_if_exists "${BASH_BASE}/completion/*"
+if [ "$USE_BASH_COMPLETION" = 'yes' ]; then
+    source_or_warn ${BASH_COMPLETION:=/etc/bash_completion}
+    source_if_exists "${BASH_BASE}/completion/*"
+fi
 
 # Setup the prompt.
 source_or_warn "${BASH_BASE}/prompt"
-
-# # This comes last, as it will have been modified during setup.
-# export PATH
