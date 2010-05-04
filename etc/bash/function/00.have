@@ -7,26 +7,12 @@
 function need {
     $must_be_interactive
     
-    have $1
-    if [ 0 = $? ]; then
-        warn "${1} is not installed"
-    else
-        # perform what was passed as stdin (BEWARE: this is not quite normal
-        # bash syntax, so semi-colons are almost certainly required)
-        
-        # FIXME 
-        #   *   can quoting the heredoc terminator fix things in some way?
-        #   *   is this not $2?
-        eval `cat`
-    fi
-    
-    return ${have}
+    available $1 \
+        || warn "${1} is not available"
 }
 
-function have {
-    # format better
+function available {
+    unset -v available
     type $1 &> /dev/null \
-        && return 1
-    
-    return 0
+        && available='yes'
 }
