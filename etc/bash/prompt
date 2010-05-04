@@ -70,7 +70,7 @@ function expand_prompt_template {
     local host="${PROMPT_HOST:=${HOST}}"
     
     # [domain] macro
-    local host="${PROMPT_DOMAIN:=${DOMAIN}}"
+    local domain="${PROMPT_DOMAIN:=${DOMAIN}}"
     
     # [window] macro
     local window=''
