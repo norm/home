@@ -1,0 +1,7 @@
+# github:etc/bash/function/10.macports
+# -*- Mode: Bash; tab-width: 4; indent-tabs-mode: nil; -*-
+#
+#       Setup the paths of the MacPorts packaging system.
+
+path_prepend "${MACPORTS_BASE}/bin"
+# TODO - MANPATH
