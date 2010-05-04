@@ -8,7 +8,7 @@
 
 # Allow overriding of the default location of bash setup.
 # (Useful when debugging.)
-BASH_BASE="${BASH_DIR:=~/etc/bash}"
+BASH_BASE="${BASH_DIR:=${HOME}/etc/bash}"
 
 # Sane defaults.
 for rc_file in $( echo ${BASH_BASE}/defaults/* ); do
