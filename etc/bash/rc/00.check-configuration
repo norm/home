@@ -36,5 +36,5 @@ if [ "$CHECK_PERL_MODULES" = 'yes' ]; then
         || warn "list-home-updates requires HTTP::Lite perl module"
 fi
 
-[ "$CHECK_GITHUB_UPDATES" = 'yes' ] \
+[ "$CHECK_GITHUB_UPDATES" = 'yes' ] && online \
     && check_github_updates
