@@ -6,4 +6,3 @@
 export REAL_CRONTAB=`which crontab`
 export CRONTAB_FILE=${HOME}/var/cron/${HOST}
 export BASE_CRONTAB="${HOME}/var/cron/_default"
-KEEP_LOCAL_CRONTABS=0

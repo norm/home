@@ -4,10 +4,8 @@
 #       Keep the master copy of any crontab file in ~/var, not /var. This
 #       makes it easier for them to then be kept under version control.
 
-[ "$KEEP_LOCAL_CRONTABS" = yes ] \
+var_set REAL_CRONTAB \
     || return
-
-
 
 function init_crontab {
     # initialise it if necessary
@@ -38,8 +36,10 @@ function check_crontab {
     
     ${REAL_CRONTAB} -l > ${temp_file} 2>/dev/null
     
-    diff_and_warn ${temp_file} ${CRONTAB_FILE} \
-                  "crontab file not properly installed"
+    warn_if_different                               \
+        ${temp_file}                                \
+        ${CRONTAB_FILE}                             \
+        "crontab file not properly installed"
     
     rm -f ${temp_file}
 }
