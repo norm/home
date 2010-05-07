@@ -26,16 +26,16 @@ source_if_exists ${BASH_BASE}/arch/${HOSTTYPE}/*
 source_if_exists ${BASH_BASE}/domain/${DOMAIN}/*
 source_if_exists ${BASH_BASE}/host/${HOST}/*
 
-# Setup the common bash settings, that apply regardless of location/hardware.
-for rc_file in $( echo ${BASH_BASE}/rc/* ); do
-    source_if_exists $rc_file
-done
-
 # Setup bash completion.
 if [ "$USE_BASH_COMPLETION" = 'yes' ]; then
     source_or_warn ${BASH_COMPLETION:=/etc/bash_completion}
     source_if_exists "${BASH_BASE}/completion/*"
 fi
+
+# Setup the common bash settings, that apply regardless of location/hardware.
+for rc_file in $( echo ${BASH_BASE}/rc/* ); do
+    source_if_exists $rc_file
+done
 
 # Setup the prompt.
 source_or_warn "${BASH_BASE}/prompt"
