@@ -65,7 +65,7 @@ function empty_status_line {
 # Run a program with an intermediate status line, for knowing what
 # is happening when running lengthy, silent programs.
 function status_then_run {
-    if [ $interactive = 1 ]; then
+    if [ "$INTERACTIVE" -eq 1 ]; then
         local temp_file=$( mktemp /tmp/bash.status.XXXXX )
         
         status_line "$*"

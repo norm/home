@@ -1,14 +1,14 @@
 # github:etc/bash/defaults/00.flags
 # -*- Mode: Bash; tab-width: 4; indent-tabs-mode: nil; -*-
 #
-#   Set up some basic signposts, used to control later behaviour.
+#       Set up some basic signposts, used to control later behaviour.
 
 # Whether or not the shell is running for a user, or in a script.
 if [[ $- == *i* ]]; then
-    interactive=1
+    export INTERACTIVE=1
     must_be_interactive=''
 else
-    interactive=0
+    export INTERACTIVE=0
     must_be_interactive='return'
 fi
 

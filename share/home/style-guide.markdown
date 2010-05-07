@@ -34,7 +34,7 @@ macro.
 If you need finer control, such as employing different code when running
 interactively, test for it like so:
 
-    if [ $interactive = 1 ]; then
+    if [ "$INTERACTIVE" -eq 1 ]; then
         # something requiring user input
     else
         # automated, default alternative
