@@ -23,7 +23,7 @@ function warn_if_different {
 
 # Some file templates have "REPLACE_ME" placeholders. Ignore these when
 # diffing the files, only warning when other parts have changed.
-function warn_if_different_with_placeholders {
+function warn_if_different_ignoring_placeholders {
     $must_be_interactive
     
     local  file_a=${1}
