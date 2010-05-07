@@ -13,6 +13,7 @@ use Digest::MD5     qw(md5_hex);
 use FileHandle;
 use File::Find;
 use HTTP::Lite;
+use Term::ANSIColor;
 
 my @directories_to_scan = qw( etc bin );
 my %files_to_check;
@@ -101,7 +102,7 @@ sub file_has_newer_version {
     my $code        = $http->request( $url );
     
     if ( 200 != $code ) {
-        warn "${code}: ${url}\n";
+        warn colored( "${code}: ${url}\n", 'bold magenta' );
         return 0;
     }
     
