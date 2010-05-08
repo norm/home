@@ -4,21 +4,21 @@
 #       Enable common extensions to the PATH.
 
 function path_append {
-    local directory=${1}
+    local directory="$1"
     
-    if [ -x $directory ]; then
-        echo ${PATH} | grep ${directory} &> /dev/null
-        [ $? = 1 ] \
+    if [ -x "$directory" ]; then
+        echo "$PATH" | grep "$directory" &> /dev/null
+        [ $? -eq 1 ] \
             && PATH="${PATH}:${directory}"
     fi
 }
 
 function path_prepend {
-    local directory=${1}
+    local directory="$1"
     
-    if [ -x $directory ]; then
-        echo ${PATH} | grep ${directory} &> /dev/null
-        [ $? = 1 ] \
+    if [ -x "$directory" ]; then
+        echo "$PATH" | grep "$directory" &> /dev/null
+        [ $? -eq 1 ] \
             && PATH="${directory}:${PATH}"
     fi
 }
