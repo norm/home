@@ -3,8 +3,8 @@
 #
 #       Setup the paths of the pkgsrc packaging system.
 
-path_prepend "${PKGSRC_BASE}/sbin"
-path_prepend "${PKGSRC_BASE}/bin"
+path_prepend    "${PKGSRC_BASE}/sbin"
+path_prepend    "${PKGSRC_BASE}/bin"
 manpath_append  "${PKGSRC_BASE}/man"
 
 [ -d "${PKGSRC_BASE}/share/bash-completion" ] \
