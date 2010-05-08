@@ -7,3 +7,4 @@
 export     HISTFILE="${HOME}/var/bash_history"          # ~/.bash_history
 export      INPUTRC="${HOME}/etc/input"                 # ~/.inputrc
 export LESSHISTFILE="${HOME}/var/less_history"          # ~/.lesshst
+export          VIM="${HOME}/etc/vim"                   # ~/.vim
