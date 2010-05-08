@@ -23,6 +23,16 @@ function path_prepend {
     fi
 }
 
+function manpath_append {
+    local directory="$1"
+    
+    if [ -x "$directory" ]; then
+        echo "$MANPATH" | grep "$directory" &> /dev/null
+        [ $? -eq 1 ] \
+            && MANPATH="${MANPATH}:${directory}"
+    fi
+}
+
 path_append  '/usr/local/bin'
 path_append  '/usr/local/sbin'
 path_prepend '/usr/sbin'

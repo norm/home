@@ -4,4 +4,4 @@
 #       Setup the paths of the MacPorts packaging system.
 
 path_prepend "${MACPORTS_BASE}/bin"
-# TODO - MANPATH
+manpath_append "${MACPORTS_BASE}/man"
