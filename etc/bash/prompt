@@ -192,11 +192,12 @@ function expand_prompt_template {
 # Allow for complex PS1 values to be set in a more succinct, readable fashion.
 [ -n "$PS1_TEMPLATE" ] \
     && PS1=$( expand_prompt_template "$PS1_TEMPLATE" "$PS1_TITLE_TEMPLATE" )
-
-# TODO
-#   *   PS2
-#   *   PS3
-#   *   PS4
+[ -n "$PS2_TEMPLATE" ] \
+    && PS2=$( expand_prompt_template "$PS2_TEMPLATE" )
+[ -n "$PS3_TEMPLATE" ] \
+    && PS3=$( expand_prompt_template "$PS3_TEMPLATE" )
+[ -n "$PS4_TEMPLATE" ] \
+    && PS4=$( expand_prompt_template "$PS4_TEMPLATE" )
 
 # Add the current prompt symbol as a quick visual indicator of shell depth.
 # export PROMPT_SYMBOLS - ???
