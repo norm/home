@@ -3,6 +3,8 @@
 #
 #       Setup the prompt environment variables.
 
+declare -a git_status
+
 # Echo the last N parts of the current working directory, also trimming 
 # individual parts to no more than PWDN_MAX_WORD.
 function pwdn {
@@ -34,6 +36,70 @@ function pwdn {
             print join( q(/), reverse @return );
         }
     "
+}
+
+# Setup variables indicating the current git status, for use in the formatter.
+function get_git_status {
+    unset -v git_status
+    
+    git_status[0]=''        # branch
+    git_status[1]='0'       # clean
+    git_status[2]='0'       # ahead
+    git_status[3]='0'       # behind
+    git_status[4]='0'       # diverged
+    git_status[5]='0'       # untracked
+    
+    local status=$( git status 2>/dev/null )
+    
+    local    find_branch="# On branch ([^${IFS}]*)"
+    local     find_clean="nothing.* to commit"
+    local  find_diverged="# Your branch and (.*) have diverged"
+    local    find_remote="# Your branch is (.*) of"
+    local find_untracked="# Untracked files:"
+    
+    if [[ ${status} =~ ${find_branch} ]]; then
+        git_status[0]="${BASH_REMATCH[1]}"
+        
+        [[ ! ${status} =~ ${find_clean} ]] \
+            && git_status[1]=1
+        [[ ${status} =~ ${find_untracked} ]] \
+            && git_status[5]=1
+        [[ ${status} =~ ${find_remote} ]] && {
+            [[ ${BASH_REMATCH[1]} == "ahead" ]]     \
+                && git_status[2]=1              \
+                || git_status[3]=1
+        }
+        [[ ${status} =~ ${find_diverged} ]] \
+            && git_status[4]=1
+        
+        return 0
+    fi
+    
+    return 1
+}
+
+# A short string to indicate the status of the current git repository.
+function git_status_formatter {
+    get_git_status \
+        || return
+    
+    local git_status_branch="${git_status[0]}"
+    local git_status_symbol=':'
+    
+    [ "${git_status_branch}" = "master" ] \
+        && git_status_branch=''
+    
+    # unclean repo is *
+    [ "${git_status[1]}" != 0 ] \
+        && git_status_symbol="${git_status_symbol}*"
+    
+    # untracked files is +
+    [ "${git_status[5]}" != 0 ] \
+        && git_status_symbol="${git_status_symbol}+"
+    
+    printf " %s%s"              \
+        "$git_status_branch"    \
+        "$git_status_symbol"
 }
 
 # Replace placeholders of the style [home] with their actual values.
@@ -85,6 +151,7 @@ function expand_prompt_template {
         -e "s/\[domain\]/${domain}/g"               \
         -e "s/\[window\]/${window}/g"               \
         -e 's/\[pwd \([0-9]\)\]/$(pwdn \1)/g'       \
+        -e "s/\[git]/\$( $GIT_STATUS_FORMATTER )/g" \
         -e "s/%B/$pbold/g"                          \
         -e "s/%b/$pnobold/g"                        \
         -e "s/%I/$pitalic/g"                        \
@@ -118,7 +185,6 @@ function expand_prompt_template {
         -e "s/%Cn/$pbgnormal/g"
         
         # TODO: 
-        #   *   git status
         #   *   hg status
         #   *   svn status?
 }
