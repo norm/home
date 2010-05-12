@@ -10,6 +10,7 @@ use strict;
 use warnings;
 
 use FileHandle;
+use Getopt::Std;
 use Pod::Usage;
 
 use constant SETTINGS_DIRECTORY => $ENV{'SCREEN_DIRECTORY'}
@@ -18,6 +19,8 @@ use constant SCREEN_COMMAND     => qw( screen -A -O );
 use constant ENVIRONMENT_HINT   => 'SCREEN_RC_FILE';
 
 
+my %opts;
+getopts( 'x', \%opts );
 
 my $command = shift;
    $command = 'resume' unless defined $command;
@@ -50,7 +53,12 @@ sub resume_session {
     my $session = determine_default_session( $choice );
 
     if ( defined $session ) {
-        system( SCREEN_COMMAND, '-R', '-d', $session );
+        system(
+                SCREEN_COMMAND,
+                ( $opts{'x'} ? '-x' : '-d' ),
+                '-r',
+                $session
+            );
     }
     else {
         new_session();
@@ -150,7 +158,7 @@ sub determine_default_session {
             $sessions{$1}{'title'}  = $2;
             $sessions{$1}{'status'} = $3;
 
-            $line =~ s{^ \s+ (\d+) \. }{scr resume $1 -- }x;
+            $line =~ s{^ \s+ (\d+) \. }{scr resume $1\n    }x;
             $list .= $line;
             $count++;
         }
@@ -206,10 +214,12 @@ Start a new screen session. The configuration file to use is an optional
 parameter. If this is not passed, B<scr> will try to find one as described 
 in B<CONFIGURATION FILES> below.
 
-=item B<scr [resume] [pid]>
+=item B<scr [-x] [resume] [pid]>
 
-Resume an existing screen session. The session to resume is chosen somewhat
-rationally, as follows:
+Resume an existing screen session. The C<-x> option means the session should
+be shared, otherwise it will be detached if it is running elsewhere.
+
+The session to resume is chosen somewhat rationally, as follows:
 
 =over
 
